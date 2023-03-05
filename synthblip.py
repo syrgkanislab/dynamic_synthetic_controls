@@ -86,6 +86,8 @@ class SyntheticBlip:
                     var_blips = np.mean(np.tile((observed_blips - blip[:, t, ell, k])**2, (N, 1)), axis=1, where=donors)
                     blip_var[:, t, ell, k] = var_blips * np.sum(donor_wsq, axis=1)
                     # influence from variance of future blip effect estimation and base response estimation
+                    # TODO. This influence part is wrong. The different future blip and base quantities
+                    # are not independent variables with each other across units; this formula treats them as such. 
                     blip_var[:, t, ell, k] += donor_wsq @ base_var[:, t]
                     for ellp in range(ell):
                         ohe = OneHotEncoder(sparse=False, categories=[np.arange(K)])
