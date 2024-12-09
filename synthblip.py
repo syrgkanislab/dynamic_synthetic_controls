@@ -1,8 +1,8 @@
-
 from joblib import Parallel, delayed
 import numpy as np
 from pcr import PCR
 from sklearn.preprocessing import OneHotEncoder
+
 
 def donor_weights(i, Zobs, A, T0, K):
     N, T = Zobs.shape
@@ -69,7 +69,7 @@ class SyntheticBlip:
                     for ellp in range(ell): # for each smaller lag, i.e. period t - ellp, with ellp < ell
                         # we subtract the blip effect of the treatment that each unit received at period t - ellp
                         # this subtracts gamma_{j, t, t - ellp}(A_{j, t - ell})
-                        ohe = OneHotEncoder(sparse=False, categories=[np.arange(K)])
+                        ohe = OneHotEncoder(sparse_output=False, categories=[np.arange(K)])
                         lagAohe = ohe.fit_transform(A[:, [t - ellp]]) # this is the treatment at t-ellp
                         observed_blips -= np.sum(blip[:, t, ellp, :] * lagAohe, axis=1)
 
@@ -90,7 +90,7 @@ class SyntheticBlip:
                     # are not independent variables with each other across units; this formula treats them as such. 
                     blip_var[:, t, ell, k] += donor_wsq @ base_var[:, t]
                     for ellp in range(ell):
-                        ohe = OneHotEncoder(sparse=False, categories=[np.arange(K)])
+                        ohe = OneHotEncoder(sparse_output=False, categories=[np.arange(K)])
                         lagAohe = ohe.fit_transform(A[:, [t - ellp]]) # this is the treatment at t-ellp
                         blip_var[:, t, ell, k] += donor_wsq @ np.sum(blip_var[:, t, ellp, :] * lagAohe, axis=1)
                     ###################################################
